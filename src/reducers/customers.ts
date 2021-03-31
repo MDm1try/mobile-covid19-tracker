@@ -40,7 +40,6 @@ const customersReducer = (state = initialState, action: CustomersActionTypes) =>
         case CUSTOMERS.GET_ALL.FAILURE: {
             return {
                 ...state,
-                users: [],
                 isLoading: false,
             };
         }

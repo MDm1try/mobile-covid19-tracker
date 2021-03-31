@@ -15,7 +15,7 @@ type Props = {
 };
 
 const Login = (props: Props) => {
-    const [email, setEmail] = useState('test@test.com');
+    const [email, setEmail] = useState('m@test.com');
     const [password, setPassword] = useState('123456');
 
     const isValid = validator.isEmail(email) && password.length > 0;
@@ -29,7 +29,7 @@ const Login = (props: Props) => {
         <Container>
             <Content>
                 <Form>
-                    <Text style={styles.logo}>Staying safe and informed</Text>
+                    <Text style={styles.logo}>Stay Safe and Informed About COVID-19</Text>
                     <Item stackedLabel>
                         <Label>Email</Label>
                         <Input value={email} onChange={(e) => setEmail(e.nativeEvent.text.trim())} />
@@ -49,7 +49,7 @@ const Login = (props: Props) => {
                         onPress={onSumbit}
                         disabled={!isValid || props.isLoading}
                     >
-                        {props.isLoading ? <Spinner /> : <Text> Login </Text>}
+                        {props.isLoading ? <Spinner color="blue" /> : <Text> Login </Text>}
                     </Button>
                     <Link to="/forgot_password" style={styles.forgotYourPassword}>
                         Forgot your password?

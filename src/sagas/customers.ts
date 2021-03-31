@@ -69,8 +69,57 @@ function* updateCustomerStatusesSaga(action: actions.UpdateCustomerStatusByIdReq
     }
 }
 
+function* getNotificationsSaga(action: actions.GetAllCustomerNotificationsRequestAction) {
+    try {
+        const { data } = yield call(api.getNotificationsService, action.payload);
+        yield put({ type: CUSTOMERS.NOTIFICATIONS.GET_ALL.SUCCESS, payload: data });
+    } catch (err) {
+        console.error(err);
+        Toast.show({
+            text: err.response ? err.response.data.error : err.message,
+            buttonText: 'Okay',
+            type: 'danger',
+        });
+        yield put({ type: CUSTOMERS.NOTIFICATIONS.GET_ALL.FAILURE });
+    }
+}
+
+function* readNotificationSaga(action: actions.ReadCustomerNotificationsRequestAction) {
+    try {
+        yield call(api.readNotificationsService, action.payload.customerId, action.payload.notificationId);
+        yield put({ type: CUSTOMERS.NOTIFICATIONS.READ.SUCCESS });
+        yield put({ type: CUSTOMERS.NOTIFICATIONS.GET_ALL.REQUEST, payload: action.payload.customerId });
+    } catch (err) {
+        console.error(err);
+        Toast.show({
+            text: err.response ? err.response.data.error : err.message,
+            buttonText: 'Okay',
+            type: 'danger',
+        });
+        yield put({ type: CUSTOMERS.NOTIFICATIONS.READ.FAILURE });
+    }
+}
+
+function* getUnseenNotificationSaga(action: actions.GetUnseenNotificationsRequestAction) {
+    try {
+        const { data } = yield call(api.getUnseenNotificationsService, action.payload);
+        yield put({ type: CUSTOMERS.NOTIFICATIONS.GET_UNSEEN.SUCCESS, payload: data.unseenNotifications });
+    } catch (err) {
+        console.error(err);
+        Toast.show({
+            text: err.response ? err.response.data.error : err.message,
+            buttonText: 'Okay',
+            type: 'danger',
+        });
+        yield put({ type: CUSTOMERS.NOTIFICATIONS.GET_UNSEEN.FAILURE });
+    }
+}
+
 export default function* watchSagas() {
     yield debounce(500, CUSTOMERS.GET_ALL.REQUEST, getCustomersSaga);
     yield takeLatest(CUSTOMERS.GET_BY_ID.REQUEST, getCustomerSaga);
     yield takeLatest(CUSTOMERS.UPDATE_STATUS_BY_ID.REQUEST, updateCustomerStatusesSaga);
+    yield takeLatest(CUSTOMERS.NOTIFICATIONS.GET_ALL.REQUEST, getNotificationsSaga);
+    yield takeLatest(CUSTOMERS.NOTIFICATIONS.READ.REQUEST, readNotificationSaga);
+    yield takeLatest(CUSTOMERS.NOTIFICATIONS.GET_UNSEEN.REQUEST, getUnseenNotificationSaga);
 }

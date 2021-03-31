@@ -6,11 +6,13 @@ import { Container, Header, Content, ListItem, Text, Left, Body } from 'native-b
 type Props = {
     firstName: string;
     lastName: string;
+    email: string;
     dob: string;
+    type: string;
 };
 
-const CustomerAccount = (props: Props) => {
-    const { firstName, lastName, dob, email } = props;
+const AdminAccount = (props: Props) => {
+    const { firstName, lastName, dob, type, email } = props;
     return (
         <Container>
             <Header>
@@ -49,6 +51,14 @@ const CustomerAccount = (props: Props) => {
                         <Text>{email}</Text>
                     </Body>
                 </ListItem>
+                <ListItem>
+                    <Left>
+                        <Text> Role:</Text>
+                    </Left>
+                    <Body>
+                        <Text>{type === 'admin' ? 'Health services managers' : 'Customer'}</Text>
+                    </Body>
+                </ListItem>
             </Content>
         </Container>
     );
@@ -59,6 +69,7 @@ const mapStateToProps = (state: IRootState) => ({
     lastName: state.auth.lastName,
     dob: state.auth.dob,
     email: state.auth.email,
+    type: state.auth.type,
 });
 
 const styles = StyleSheet.create({
@@ -69,4 +80,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default connect(mapStateToProps)(CustomerAccount);
+export default connect(mapStateToProps)(AdminAccount);

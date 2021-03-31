@@ -29,8 +29,10 @@ function* login(action: actions.LoginRequestAction) {
 
         yield AsyncStorage.setItem('jwtToken', data.jwtToken);
         const payload = {
+            _id: data._id,
             firstName: data.firstName,
             lastName: data.lastName,
+            email: data.email,
             dob: data.dob,
             type: data.type,
         };

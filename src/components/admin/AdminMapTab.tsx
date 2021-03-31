@@ -1,24 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { connect } from 'react-redux';
 import MapView, { Marker, Circle, PROVIDER_GOOGLE } from 'react-native-maps';
-import { Container, Content, Button, Text, Card, CardItem, Header, Spinner, View, Icon } from 'native-base';
+import { Container, Content, Text, Card, CardItem, Spinner, View, Icon, Button } from 'native-base';
 import { StyleSheet, Alert, Dimensions } from 'react-native';
 import Geolocation, { GeolocationError, GeolocationResponse } from '@react-native-community/geolocation';
-import { connect } from 'react-redux';
 
+import AddNewLocationModal from '../modals/AddNewLocationModal';
 import createAction from '../../utils/createAction';
-import { CUSTOMERS, LOCATIONS } from '../../actions';
+import { LOCATIONS } from '../../actions';
 import * as actions from '../../actionTypes/LocationActionTypes';
-import * as customerActions from '../../actionTypes/CustomersActionTypes';
 
 type Props = {
+    addLocation: (payload: actions.AddLocationRequestAction['payload']) => void;
     getLocations: () => void;
-    getUnseenNotification: (customerId: string) => void;
     list: Array<Location>;
     isLoading: boolean;
-    customerId: string;
 };
 
-const CustomerHome = ({ getLocations, getUnseenNotification, list, isLoading, customerId }: Props) => {
+const AdminMapTab = ({ getLocations, addLocation, list, isLoading }: Props) => {
     const [region, setRegion] = useState({
         latitude: 37.78825,
         longitude: -122.4324,
@@ -26,6 +25,13 @@ const CustomerHome = ({ getLocations, getUnseenNotification, list, isLoading, cu
         error: '',
         latitudeDelta: 0.0025,
         longitudeDelta: 0.0034,
+    });
+
+    const [show, setModalVisible] = useState(false);
+
+    const [markerInfo, setMarkerInfo] = useState({
+        latitude: 0,
+        longitude: 0,
     });
 
     const geoLocationSuccess = useCallback((response: GeolocationResponse) => {
@@ -58,44 +64,57 @@ const CustomerHome = ({ getLocations, getUnseenNotification, list, isLoading, cu
         Alert.alert(error);
     }, []);
 
-    const handleRefreshLocations = useCallback(() => {
-        getLocations();
-    }, [getLocations]);
-
-    const handleFindCurrentLocation = useCallback(() => {
-        Geolocation.getCurrentPosition(geoLocationSuccess, geoLocationFailure, {
-            timeout: 10000,
-        });
-    }, [geoLocationSuccess, geoLocationFailure]);
-
     useEffect(() => {
-        Geolocation.getCurrentPosition(geoLocationSuccess, geoLocationFailure, { timeout: 10000 });
+        Geolocation.getCurrentPosition(geoLocationSuccess, geoLocationFailure);
     }, [geoLocationFailure, geoLocationSuccess]);
 
     useEffect(() => {
         getLocations();
     }, [getLocations]);
 
-    useEffect(() => {
-        getUnseenNotification(customerId);
-    }, [getUnseenNotification, customerId]);
-    console.log('region.readyToLaunch', region.readyToLaunch, 'isLoading', isLoading);
+    const handleUpdateMap = useCallback(() => {
+        Geolocation.getCurrentPosition(geoLocationSuccess, geoLocationFailure);
+        getLocations();
+    }, [geoLocationSuccess, geoLocationFailure, getLocations]);
+
+    const handleAddMarker = useCallback((e) => {
+        const coordinate = e.nativeEvent.coordinate;
+        setMarkerInfo({
+            latitude: coordinate.latitude,
+            longitude: coordinate.longitude,
+        });
+        setModalVisible(true);
+    }, []);
+
+    const handleClose = useCallback(() => setModalVisible(false), [setModalVisible]);
+
+    const handleConfirm = useCallback(
+        (name: string, radius: number) => {
+            const payload = {
+                ...markerInfo,
+                name,
+                radius,
+            };
+            addLocation(payload);
+            setModalVisible(false);
+        },
+        [setModalVisible, addLocation, markerInfo],
+    );
+
     return (
         <Container>
-            <Header>
-                <Text style={styles.header}>COVID-19 Public Places </Text>
-            </Header>
             <Content>
                 <Card>
                     <CardItem header bordered>
-                        <Text>Public places visited by cases during their infectious period</Text>
+                        <Text style={styles.text}>If you want to add a new location, please click it on the map</Text>
                     </CardItem>
-                    <CardItem bordered style={styles.mapCardItem}>
-                        {region.readyToLaunch || isLoading ? (
+                    <CardItem footer bordered style={styles.mapCardItem}>
+                        {region.readyToLaunch ? (
                             <MapView
                                 provider={PROVIDER_GOOGLE}
                                 region={region}
                                 style={styles.maps}
+                                onPress={handleAddMarker}
                                 showsUserLocation
                                 zoomEnabled
                             >
@@ -116,20 +135,18 @@ const CustomerHome = ({ getLocations, getUnseenNotification, list, isLoading, cu
                             </MapView>
                         ) : (
                             <View style={styles.spinner}>
-                                <Spinner color="blue" />
+                                {isLoading ? (
+                                    <Spinner color="blue" />
+                                ) : (
+                                    <Button onPress={handleUpdateMap}>
+                                        <Icon name="refresh" />
+                                    </Button>
+                                )}
                             </View>
                         )}
                     </CardItem>
-                    <CardItem footer bordered style={styles.footer}>
-                        <Button iconRight onPress={handleRefreshLocations} disabled={isLoading}>
-                            <Text>Refresh Zones</Text>
-                            {isLoading ? <Spinner color="blue" /> : <Icon name="refresh-outline" />}
-                        </Button>
-                        <Button icon onPress={handleFindCurrentLocation}>
-                            <Icon name="locate" />
-                        </Button>
-                    </CardItem>
                 </Card>
+                <AddNewLocationModal show={show} handleClose={handleClose} handleConfirm={handleConfirm} />
             </Content>
         </Container>
     );
@@ -141,6 +158,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
     },
+    text: { color: 'black' },
     maps: {
         width: '100%',
         height: '100%',
@@ -152,24 +170,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     mapCardItem: {
-        height: Dimensions.get('window').height - 215,
-    },
-    footer: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        height: Dimensions.get('window').height - 195,
     },
 });
 
 const mapStateToProps = (state: IRootState) => ({
     isLoading: state.locations.isLoading,
     list: state.locations.list,
-    customerId: state.auth._id,
 });
 
 export default connect(mapStateToProps, {
+    addLocation: createAction<actions.AddLocationRequestAction['payload']>(LOCATIONS.ADD),
     getLocations: createAction<actions.AddLocationRequestAction['payload']>(LOCATIONS.GET_ALL),
-    getUnseenNotification: createAction<customerActions.GetUnseenNotificationsRequestAction['payload']>(
-        CUSTOMERS.NOTIFICATIONS.GET_UNSEEN,
-    ),
-})(CustomerHome);
+})(AdminMapTab);

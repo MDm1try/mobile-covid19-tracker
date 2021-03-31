@@ -91,6 +91,14 @@ const EditCustomer = ({ isLoading, updateCustomerStatusById, getCustomerById, cu
                                 <Text>{customer?.dob}</Text>
                             </Body>
                         </ListItem>
+                        <ListItem>
+                            <Left>
+                                <Text> Email:</Text>
+                            </Left>
+                            <Body>
+                                <Text>{customer?.email}</Text>
+                            </Body>
+                        </ListItem>
                         <ListItem header noBorder noIndent style={styles.checkboxTitle}>
                             <Text>Please, select the current status for the patient:</Text>
                         </ListItem>

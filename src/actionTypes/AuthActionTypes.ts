@@ -3,8 +3,10 @@ import { AUTH } from '../actions';
 export interface LoginSuccessAction {
     type: typeof AUTH.LOGIN.SUCCESS;
     payload: {
+        _id: string;
         firstName: string;
         lastName: string;
+        email: string;
         dob: string;
         type: string;
     };

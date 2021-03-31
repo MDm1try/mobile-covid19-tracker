@@ -32,12 +32,46 @@ export interface UpdateCustomerStatusByIdSuccessAction {
     payload: undefined;
 }
 
+export interface GetAllCustomerNotificationsRequestAction {
+    type: typeof CUSTOMERS.NOTIFICATIONS.GET_ALL.REQUEST;
+    payload: string;
+}
+export interface GetAllCustomerNotificationsSuccessAction {
+    type: typeof CUSTOMERS.NOTIFICATIONS.GET_ALL.SUCCESS;
+    payload: {
+        notifications: Array<Notification>;
+        unseenNotifications: number;
+    };
+}
+
+export interface ReadCustomerNotificationsRequestAction {
+    type: typeof CUSTOMERS.NOTIFICATIONS.READ.REQUEST;
+    payload: {
+        notificationId: string;
+        customerId: string;
+    };
+}
+
+export interface GetUnseenNotificationsRequestAction {
+    type: typeof CUSTOMERS.NOTIFICATIONS.GET_UNSEEN.REQUEST;
+    payload: string;
+}
+export interface GetUnseenNotificationsSuccessAction {
+    type: typeof CUSTOMERS.NOTIFICATIONS.GET_UNSEEN.SUCCESS;
+    payload: number;
+}
+
 type CustomersActionTypes =
     | GetAllCustomersSuccessAction
     | GetAllCustomersRequestAction
     | GetCustomerByIdRequestAction
     | GetByIdCustomerSuccessAction
     | UpdateCustomerStatusByIdRequestAction
-    | UpdateCustomerStatusByIdSuccessAction;
+    | UpdateCustomerStatusByIdSuccessAction
+    | GetAllCustomerNotificationsRequestAction
+    | GetAllCustomerNotificationsSuccessAction
+    | ReadCustomerNotificationsRequestAction
+    | GetUnseenNotificationsRequestAction
+    | GetUnseenNotificationsSuccessAction;
 
 export default CustomersActionTypes;

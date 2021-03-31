@@ -1,5 +1,5 @@
 {
-  "name": "covid19_agents",
+  "name": "covid19-agents",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.14.1",
     "@react-native-community/datetimepicker": "^3.2.0",
+    "@react-native-community/geolocation": "^2.0.2",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/drawer": "^5.12.4",
     "@react-navigation/native": "^5.9.3",
@@ -23,6 +24,7 @@
     "react": "16.13.1",
     "react-native": "0.63.4",
     "react-native-gesture-handler": "^1.10.3",
+    "react-native-maps": "0.28.0",
     "react-native-reanimated": "^1.13.2",
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "^2.18.1",
