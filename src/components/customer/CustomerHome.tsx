@@ -49,7 +49,10 @@ const CustomerHome = ({ getLocations, getUnseenNotification, list, isLoading, cu
     }, []);
 
     const geoLocationFailure = useCallback((err: GeolocationError) => {
-        const error = err.message || 'Geo Location failure, permission denied, Please enable it.';
+        const error =
+            err.message === 'No location provider available.'
+                ? 'Geo Location failure, permission denied, Please enable it.'
+                : err.message;
         setRegion((prevState) => ({
             ...prevState,
             readyToLaunch: false,

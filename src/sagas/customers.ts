@@ -115,6 +115,21 @@ function* getUnseenNotificationSaga(action: actions.GetUnseenNotificationsReques
     }
 }
 
+function* getLastCustomerStatusSaga(action: actions.GetLastCustomerStatusRequestAction) {
+    try {
+        const { data } = yield call(api.getLastCustomerStatusesService, action.payload);
+        yield put({ type: CUSTOMERS.GET_LAST_STATUS.SUCCESS, payload: data });
+    } catch (err) {
+        console.error(err);
+        Toast.show({
+            text: err.response ? err.response.data.error : err.message,
+            buttonText: 'Okay',
+            type: 'danger',
+        });
+        yield put({ type: CUSTOMERS.GET_LAST_STATUS.FAILURE });
+    }
+}
+
 export default function* watchSagas() {
     yield debounce(500, CUSTOMERS.GET_ALL.REQUEST, getCustomersSaga);
     yield takeLatest(CUSTOMERS.GET_BY_ID.REQUEST, getCustomerSaga);
@@ -122,4 +137,5 @@ export default function* watchSagas() {
     yield takeLatest(CUSTOMERS.NOTIFICATIONS.GET_ALL.REQUEST, getNotificationsSaga);
     yield takeLatest(CUSTOMERS.NOTIFICATIONS.READ.REQUEST, readNotificationSaga);
     yield takeLatest(CUSTOMERS.NOTIFICATIONS.GET_UNSEEN.REQUEST, getUnseenNotificationSaga);
+    yield takeLatest(CUSTOMERS.GET_LAST_STATUS.REQUEST, getLastCustomerStatusSaga);
 }

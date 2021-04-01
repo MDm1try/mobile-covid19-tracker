@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Container, H3, Left, Content, ListItem, CheckBox, Text, Body, Button, Spinner } from 'native-base';
 import { StyleSheet } from 'react-native';
 
+import AddInfectionTimeModal from '../modals/AddInfectionTimeModal';
 import createAction from '../../utils/createAction';
 import { CUSTOMERS } from '../../actions';
 import * as actions from '../../actionTypes/CustomersActionTypes';
@@ -13,7 +14,7 @@ type Props = {
     customer?: Customer;
     isLoading: boolean;
     getCustomerById: (_id: string) => void;
-    updateCustomerStatusById: (statuses: CustomerStatuses) => void;
+    updateCustomerStatusById: (payload: actions.UpdateCustomerStatusByIdRequestAction['payload']) => void;
 };
 
 const EditCustomer = ({ isLoading, updateCustomerStatusById, getCustomerById, customer, route }: Props) => {
@@ -24,6 +25,9 @@ const EditCustomer = ({ isLoading, updateCustomerStatusById, getCustomerById, cu
         isRecovered: false,
         isPossiblyInfected: false,
     });
+    const [hours, setHours] = useState(0);
+
+    const [show, setModalVisible] = useState(false);
 
     useEffect(() => {
         getCustomerById(route.params._id);
@@ -45,6 +49,9 @@ const EditCustomer = ({ isLoading, updateCustomerStatusById, getCustomerById, cu
     const handleChangeStatus = useCallback(
         (name: 'isInfected' | 'isHealthy' | 'isVaccinated' | 'isRecovered' | 'isPossiblyInfected') => () => {
             setStatuses({ ...statuses, [name]: !statuses[name] });
+            if (name === 'isInfected' && !statuses[name]) {
+                setModalVisible(true);
+            }
         },
         [setStatuses, statuses],
     );
@@ -55,9 +62,15 @@ const EditCustomer = ({ isLoading, updateCustomerStatusById, getCustomerById, cu
                 ...statuses,
                 _id: customer.statuses[0]._id,
                 userId: customer.statuses[0]._id,
+                hours,
             });
         }
-    }, [updateCustomerStatusById, statuses, customer]);
+    }, [updateCustomerStatusById, statuses, customer, hours]);
+
+    const handleConfirm = useCallback((h: number) => {
+        setHours(h);
+        setModalVisible(false);
+    }, []);
 
     return (
         <Container>
@@ -109,7 +122,9 @@ const EditCustomer = ({ isLoading, updateCustomerStatusById, getCustomerById, cu
                                 onPress={handleChangeStatus('isInfected')}
                             />
                             <Body>
-                                <Text>already got infected</Text>
+                                <Text>
+                                    already got infected {hours > 0 && statuses.isInfected && `${hours} hours ago`}
+                                </Text>
                             </Body>
                         </ListItem>
                         <ListItem noIndent>
@@ -157,6 +172,7 @@ const EditCustomer = ({ isLoading, updateCustomerStatusById, getCustomerById, cu
                         </Button>
                     </>
                 )}
+                <AddInfectionTimeModal show={show} handleConfirm={handleConfirm} />
             </Content>
         </Container>
     );

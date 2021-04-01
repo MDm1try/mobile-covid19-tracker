@@ -3,12 +3,19 @@ import CustomersActionTypes from '../actionTypes/CustomersActionTypes';
 
 const initialState = {
     list: [],
-    customer: null,
+    lastCustomerStatus: null,
     isLoading: false,
 };
 
 const customersReducer = (state = initialState, action: CustomersActionTypes) => {
     switch (action.type) {
+        case CUSTOMERS.GET_LAST_STATUS.SUCCESS: {
+            return {
+                ...state,
+                lastCustomerStatus: action.payload,
+                isLoading: false,
+            };
+        }
         case CUSTOMERS.GET_ALL.SUCCESS: {
             return {
                 ...state,
@@ -31,12 +38,14 @@ const customersReducer = (state = initialState, action: CustomersActionTypes) =>
                 isLoading: true,
             };
         }
+        case CUSTOMERS.GET_LAST_STATUS.REQUEST:
         case CUSTOMERS.UPDATE_STATUS_BY_ID.REQUEST: {
             return {
                 ...state,
                 isLoading: true,
             };
         }
+        case CUSTOMERS.GET_LAST_STATUS.FAILURE:
         case CUSTOMERS.GET_ALL.FAILURE: {
             return {
                 ...state,

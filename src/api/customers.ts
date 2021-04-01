@@ -19,6 +19,11 @@ export const updateCustomerStatusesByIdService = (data: actions.UpdateCustomerSt
     return httpClient.put(API_ENDPOINT, data);
 };
 
+export const getLastCustomerStatusesService = (customerId: actions.GetLastCustomerStatusRequestAction['payload']) => {
+    const API_ENDPOINT = `/api/v1/secure/customers/${customerId}/statuses/last`;
+    return httpClient.get(API_ENDPOINT);
+};
+
 export const getNotificationsService = (customerId: string) => {
     const API_ENDPOINT = `/api/v1/secure/customers/${customerId}/notifications`;
     return httpClient.get(API_ENDPOINT);

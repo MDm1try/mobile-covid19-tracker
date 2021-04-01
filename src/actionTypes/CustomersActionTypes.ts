@@ -24,12 +24,31 @@ export interface GetByIdCustomerSuccessAction {
 
 export interface UpdateCustomerStatusByIdRequestAction {
     type: typeof CUSTOMERS.UPDATE_STATUS_BY_ID.REQUEST;
-    payload: CustomerStatuses;
+    payload: {
+        _id: string;
+        userId: string;
+        isInfected: boolean;
+        isHealthy: boolean;
+        isVaccinated: boolean;
+        isRecovered: boolean;
+        isPossiblyInfected: boolean;
+        hours: number;
+    };
 }
 
 export interface UpdateCustomerStatusByIdSuccessAction {
     type: typeof CUSTOMERS.UPDATE_STATUS_BY_ID.SUCCESS;
     payload: undefined;
+}
+
+export interface GetLastCustomerStatusRequestAction {
+    type: typeof CUSTOMERS.GET_LAST_STATUS.REQUEST;
+    payload: string;
+}
+
+export interface GetLastCustomerStatusSuccessAction {
+    type: typeof CUSTOMERS.GET_LAST_STATUS.SUCCESS;
+    payload: CustomerStatuses;
 }
 
 export interface GetAllCustomerNotificationsRequestAction {
@@ -72,6 +91,8 @@ type CustomersActionTypes =
     | GetAllCustomerNotificationsSuccessAction
     | ReadCustomerNotificationsRequestAction
     | GetUnseenNotificationsRequestAction
-    | GetUnseenNotificationsSuccessAction;
+    | GetUnseenNotificationsSuccessAction
+    | GetLastCustomerStatusRequestAction
+    | GetLastCustomerStatusSuccessAction;
 
 export default CustomersActionTypes;

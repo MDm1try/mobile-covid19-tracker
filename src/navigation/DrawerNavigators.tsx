@@ -32,8 +32,12 @@ type CustomerNavigatorProps = {
 
 export const CustomerDrawer = ({ unseenNotifications }: CustomerNavigatorProps) => (
     <Drawer.Navigator initialRouteName="customer_home" drawerContent={(props) => <DrawerContent {...props} />}>
-        <Drawer.Screen name="customer_home" component={CustomerHome} options={{ title: 'Home' }} />
-        <Drawer.Screen name="customer_account" component={CustomerAccount} options={{ title: 'Your Account' }} />
+        <Drawer.Screen name="customer_home" component={CustomerHome} options={{ title: 'Home', unmountOnBlur: true }} />
+        <Drawer.Screen
+            name="customer_account"
+            component={CustomerAccount}
+            options={{ title: 'Your Account', unmountOnBlur: true }}
+        />
         <Drawer.Screen
             name="customer_notifications"
             component={CustomerNotifications}
@@ -41,7 +45,7 @@ export const CustomerDrawer = ({ unseenNotifications }: CustomerNavigatorProps) 
                 drawerLabel: () => (
                     // eslint-disable-next-line react-native/no-inline-styles
                     <View style={{ flexDirection: 'row' }}>
-                        <Text>
+                        <Text style={{ color: 'grey' }}>
                             Notifications
                             {unseenNotifications > 0 && (
                                 <Badge>
@@ -51,6 +55,7 @@ export const CustomerDrawer = ({ unseenNotifications }: CustomerNavigatorProps) 
                         </Text>
                     </View>
                 ),
+                unmountOnBlur: true,
             }}
         />
     </Drawer.Navigator>
@@ -58,8 +63,12 @@ export const CustomerDrawer = ({ unseenNotifications }: CustomerNavigatorProps) 
 
 export const AdminDrawer = () => (
     <Drawer.Navigator initialRouteName="admin_home" drawerContent={(props) => <DrawerContent {...props} />}>
-        <Drawer.Screen name="admin_home" component={AdminHome} options={{ title: 'Home' }} />
-        <Drawer.Screen name="admin_customers" component={Customers} options={{ title: 'Customers' }} />
+        <Drawer.Screen name="admin_home" component={AdminHome} options={{ title: 'Home', unmountOnBlur: true }} />
+        <Drawer.Screen
+            name="admin_customers"
+            component={Customers}
+            options={{ title: 'Customers', unmountOnBlur: true }}
+        />
         <Drawer.Screen name="admin_account" component={AdminAccount} options={{ title: 'Your Account' }} />
     </Drawer.Navigator>
 );

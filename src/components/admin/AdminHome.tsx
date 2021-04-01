@@ -5,9 +5,7 @@ import { StyleSheet } from 'react-native';
 import AdminListTab from './AdminListTab';
 import AdminMapTab from './AdminMapTab';
 
-type Props = {};
-
-const AdminHome = (props: Props) => {
+const AdminHome = () => {
     return (
         <Container>
             <Header hasTabs>

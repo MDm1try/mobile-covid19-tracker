@@ -12,7 +12,7 @@ type AuthReducer = {
 type CustomersReducer = {
     list: Array<Customer>;
     isLoading: boolean;
-    customer?: Customer;
+    lastCustomerStatus?: CustomerStatuses;
 };
 
 type NotificationsReducer = {

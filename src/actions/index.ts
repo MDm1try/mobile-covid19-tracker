@@ -9,6 +9,7 @@ export const AUTH = {
 export const CUSTOMERS = {
     GET_ALL: createActionConstants('CUSTOMERS.GET_ALL'),
     GET_BY_ID: createActionConstants('CUSTOMERS.GET_BY_ID'),
+    GET_LAST_STATUS: createActionConstants('CUSTOMERS.GET_LAST_STATUS'),
     UPDATE_STATUS_BY_ID: createActionConstants('CUSTOMERS.UPDATE_STATUS_BY_ID'),
     NOTIFICATIONS: {
         GET_ALL: createActionConstants('CUSTOMERS.NOTIFICATIONS.GET_ALL'),

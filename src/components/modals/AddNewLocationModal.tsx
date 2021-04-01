@@ -1,14 +1,15 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Modal, StyleSheet, View } from 'react-native';
 import { Container, Content, Label, Form, Item, Input, Button, Text, H2 } from 'native-base';
 
 type Props = {
     show: boolean;
+    qty: number;
     handleClose: () => void;
     handleConfirm: (name: string, radius: number) => void;
 };
-const AddNewLocationModal = ({ show, handleClose, handleConfirm }: Props) => {
-    const [name, setName] = useState('Point 1');
+const AddNewLocationModal = ({ qty, show, handleClose, handleConfirm }: Props) => {
+    const [name, setName] = useState(`Point ${qty + 1}`);
     const [radius, setRadius] = useState('10');
     const [error, setError] = useState('');
 
@@ -17,10 +18,14 @@ const AddNewLocationModal = ({ show, handleClose, handleConfirm }: Props) => {
         if (name.length && d > 0 && d <= 500) {
             handleConfirm(name, d);
             setError('');
-        } else {
+        } else if (!(d > 0 && d <= 500)) {
             setError('should be greater than 0 and less than 500 m');
         }
     }, [handleConfirm, radius, name]);
+
+    useEffect(() => {
+        setName(`Point ${qty + 1}`);
+    }, [qty]);
 
     return (
         <Modal animationType="slide" transparent={true} visible={show} onRequestClose={handleClose}>
@@ -29,11 +34,11 @@ const AddNewLocationModal = ({ show, handleClose, handleConfirm }: Props) => {
                     <Form>
                         <H2>Add a new location</H2>
                         <Item stackedLabel error={name.length === 0}>
-                            <Label>Name</Label>
+                            <Label>Name *</Label>
                             <Input value={name} onChangeText={(value) => setName(value.trim())} />
                         </Item>
                         <Item stackedLabel error={error.length > 0}>
-                            <Label>Diameter (meters)</Label>
+                            <Label>Diameter (meters) *</Label>
                             <Input
                                 value={radius}
                                 keyboardType="numeric"
@@ -89,4 +94,4 @@ const styles = StyleSheet.create({
     errorText: { color: 'red', paddingLeft: 15 },
 });
 
-export default AddNewLocationModal;
+export default React.memo(AddNewLocationModal);

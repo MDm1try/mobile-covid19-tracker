@@ -55,7 +55,10 @@ const AdminMapTab = ({ getLocations, addLocation, list, isLoading }: Props) => {
     }, []);
 
     const geoLocationFailure = useCallback((err: GeolocationError) => {
-        const error = err.message || 'Geo Location failure, permission denied, Please enable it.';
+        const error =
+            err.message === 'No location provider available.'
+                ? 'Geo Location failure, permission denied, Please enable it.'
+                : err.message;
         setRegion((prevState) => ({
             ...prevState,
             readyToLaunch: false,
@@ -146,7 +149,12 @@ const AdminMapTab = ({ getLocations, addLocation, list, isLoading }: Props) => {
                         )}
                     </CardItem>
                 </Card>
-                <AddNewLocationModal show={show} handleClose={handleClose} handleConfirm={handleConfirm} />
+                <AddNewLocationModal
+                    show={show}
+                    handleClose={handleClose}
+                    handleConfirm={handleConfirm}
+                    qty={list.length}
+                />
             </Content>
         </Container>
     );

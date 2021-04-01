@@ -80,7 +80,7 @@ const CustomerNotifications = ({
         <Container>
             <Header>
                 <Text style={styles.header}>
-                    Notifications
+                    Your Notifications
                     {unseenNotifications > 0 && (
                         <Badge>
                             <Text>{unseenNotifications}</Text>
