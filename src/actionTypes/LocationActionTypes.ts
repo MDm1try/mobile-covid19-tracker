@@ -1,7 +1,7 @@
 import { LOCATIONS } from '../actions';
 
 export interface AddLocationRequestAction {
-    type: typeof LOCATIONS.ADD;
+    type: typeof LOCATIONS.ADD.REQUEST;
     payload: {
         name: string;
         radius: number;

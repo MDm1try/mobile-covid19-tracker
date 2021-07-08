@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import MapView, { Marker, Circle, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Container, Content, Button, Text, Card, CardItem, Header, Spinner, View, Icon } from 'native-base';
-import { StyleSheet, Alert, Dimensions } from 'react-native';
+import { StyleSheet, Alert, Dimensions, PermissionsAndroid } from 'react-native';
 import Geolocation, { GeolocationError, GeolocationResponse } from '@react-native-community/geolocation';
 import { connect } from 'react-redux';
 
@@ -9,6 +9,7 @@ import createAction from '../../utils/createAction';
 import { CUSTOMERS, LOCATIONS } from '../../actions';
 import * as actions from '../../actionTypes/LocationActionTypes';
 import * as customerActions from '../../actionTypes/CustomersActionTypes';
+import requestLocationPermission from '../../utils/requestLocationPermission';
 
 type Props = {
     getLocations: () => void;
@@ -19,6 +20,8 @@ type Props = {
 };
 
 const CustomerHome = ({ getLocations, getUnseenNotification, list, isLoading, customerId }: Props) => {
+    const [locationPermissionGranted, setLocationPermissionGranted] = useState(false);
+
     const [region, setRegion] = useState({
         latitude: 37.78825,
         longitude: -122.4324,
@@ -72,8 +75,17 @@ const CustomerHome = ({ getLocations, getUnseenNotification, list, isLoading, cu
     }, [geoLocationSuccess, geoLocationFailure]);
 
     useEffect(() => {
-        Geolocation.getCurrentPosition(geoLocationSuccess, geoLocationFailure, { timeout: 10000 });
-    }, [geoLocationFailure, geoLocationSuccess]);
+        requestLocationPermission(
+            () => setLocationPermissionGranted(true),
+            () => setLocationPermissionGranted(false),
+        );
+    });
+
+    useEffect(() => {
+        if (locationPermissionGranted) {
+            Geolocation.getCurrentPosition(geoLocationSuccess, geoLocationFailure, { timeout: 10000 });
+        }
+    }, [geoLocationFailure, geoLocationSuccess, locationPermissionGranted]);
 
     useEffect(() => {
         getLocations();
@@ -82,6 +94,7 @@ const CustomerHome = ({ getLocations, getUnseenNotification, list, isLoading, cu
     useEffect(() => {
         getUnseenNotification(customerId);
     }, [getUnseenNotification, customerId]);
+
     console.log('region.readyToLaunch', region.readyToLaunch, 'isLoading', isLoading);
     return (
         <Container>

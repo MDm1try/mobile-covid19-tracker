@@ -38,7 +38,7 @@ const AddNewLocationModal = ({ qty, show, handleClose, handleConfirm }: Props) =
                             <Input value={name} onChangeText={(value) => setName(value.trim())} />
                         </Item>
                         <Item stackedLabel error={error.length > 0}>
-                            <Label>Diameter (meters) *</Label>
+                            <Label>Radius (meters) *</Label>
                             <Input
                                 value={radius}
                                 keyboardType="numeric"

@@ -27,9 +27,20 @@ type LocationsReducer = {
     location?: Location;
 };
 
+type StatisticsReducer = {
+    countInfectedCustomers: number;
+    countHealthyCustomers: number;
+    countVaccinatedCustomers: number;
+    countRecoveredCustomers: number;
+    countPossiblyInfectedCustomers: number;
+    countLocations: number;
+    isLoading: boolean;
+};
+
 interface IRootState {
     auth: AuthReducer;
     customers: CustomersReducer;
     locations: LocationsReducer;
     notifications: NotificationsReducer;
+    statistics: StatisticsReducer;
 }

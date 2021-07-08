@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet } from 'react-native';
-import { Container, Header, Content, ListItem, Text, Left, Body, CheckBox, Spinner, Icon } from 'native-base';
+import { Container, Header, Content, ListItem, Text, Left, Body, Spinner, Icon } from 'native-base';
 
 import * as actions from '../../actionTypes/CustomersActionTypes';
 import createAction from '../../utils/createAction';
@@ -14,7 +14,7 @@ type Props = {
     email: string;
     customerId: string;
     isLoading: boolean;
-    lastCustomerStatus: CustomerStatuses;
+    lastCustomerStatus?: CustomerStatuses;
     getLastCustomerStatus: (payload: actions.GetLastCustomerStatusRequestAction['payload']) => void;
 };
 

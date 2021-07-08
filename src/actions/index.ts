@@ -25,3 +25,7 @@ export const LOCATIONS = {
     REMOVE_BY_ID: createActionConstants('LOCATIONS.REMOVE_BY_ID'),
     TRACK: createActionConstants('LOCATIONS.TRACK'),
 };
+
+export const STATISTICS = {
+    GET: createActionConstants('STATISTICS.GET'),
+};

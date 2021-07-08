@@ -6,6 +6,7 @@ import { Toast } from 'native-base';
 import createAction from '../utils/createAction';
 import { LOCATIONS } from '../actions';
 import * as actions from '../actionTypes/LocationActionTypes';
+import requestLocationPermission from '../utils/requestLocationPermission';
 
 type Props = {
     children: ReactNode;
@@ -13,12 +14,18 @@ type Props = {
 };
 
 class WatchLocation extends Component<Props> {
-    componentDidMount() {
-        const watchId = Geolocation.watchPosition(this.handleSuccess, this.handleError, {
+    watchID = 0;
+
+    async componentDidMount() {
+        await requestLocationPermission(this.watchPosition);
+    }
+
+    watchPosition = () => {
+        this.watchID = Geolocation.watchPosition(this.handleSuccess, this.handleError, {
             maximumAge: 5000,
         });
-        console.log('watchId', watchId);
-    }
+        console.log('watchId', this.watchID);
+    };
 
     handleSuccess = (position: GeolocationResponse) => {
         console.log('\nposition', position);
@@ -37,6 +44,10 @@ class WatchLocation extends Component<Props> {
             buttonText: 'Okay',
             type: 'danger',
         });
+    };
+
+    componentWillUnmount = () => {
+        Geolocation.clearWatch(this.watchID);
     };
 
     render() {

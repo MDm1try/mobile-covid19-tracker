@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Badge, Text, View } from 'native-base';
+import { Badge, Text, View, Icon } from 'native-base';
 
 import * as actions from '../actionTypes/AuthActionTypes';
-import { CustomerHome, CustomerAccount, CustomerNotifications } from '../components/customer';
-import { AdminHome, Customers, AdminAccount } from '../components/admin';
+import { CustomerHome, CustomerAccount, CustomerNotifications, CustomerHelp } from '../components/customer';
+import { AdminHome, Customers, AdminAccount, AdminStatistics } from '../components/admin';
 import { store } from '../configure-store';
 import createAction from '../utils/createAction';
 import { AUTH } from '../actions';
@@ -58,17 +58,34 @@ export const CustomerDrawer = ({ unseenNotifications }: CustomerNavigatorProps) 
                 unmountOnBlur: true,
             }}
         />
+        <Drawer.Screen
+            name="customer_help"
+            component={CustomerHelp}
+            options={{
+                drawerLabel: () => (
+                    <Text style={{ color: 'grey' }}>
+                        Help
+                        <Icon name="help-circle-outline" style={{ color: '#007AFF' }} />
+                    </Text>
+                ),
+            }}
+        />
     </Drawer.Navigator>
 );
 
 export const AdminDrawer = () => (
     <Drawer.Navigator initialRouteName="admin_home" drawerContent={(props) => <DrawerContent {...props} />}>
         <Drawer.Screen name="admin_home" component={AdminHome} options={{ title: 'Home', unmountOnBlur: true }} />
+        <Drawer.Screen name="admin_account" component={AdminAccount} options={{ title: 'Your Account' }} />
         <Drawer.Screen
             name="admin_customers"
             component={Customers}
             options={{ title: 'Customers', unmountOnBlur: true }}
         />
-        <Drawer.Screen name="admin_account" component={AdminAccount} options={{ title: 'Your Account' }} />
+        <Drawer.Screen
+            name="admin_statistics"
+            component={AdminStatistics}
+            options={{ title: 'Statistics', unmountOnBlur: true }}
+        />
     </Drawer.Navigator>
 );
